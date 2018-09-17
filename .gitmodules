@@ -1,0 +1,3 @@
+[submodule "submodules/simple-arguments"]
+	path = submodules/simple-arguments
+	url = https://github.com/superbr4in/simple-arguments.git
