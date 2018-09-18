@@ -1,25 +1,12 @@
-#include <array>
 #include <iostream>
-#include <memory>
+#include <libgen.h>
+#include <sstream>
 #include <string>
 
-std::string exec(std::string const& command)
-{
-    std::array<char, 128> buffer;
-    std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
+#include <boa/boa.h>
 
-    if (!pipe)
-        throw std::runtime_error("popen failed");
-
-    std::string result;
-    while (!feof(pipe.get()))
-    {
-        if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
-            result += buffer.data();
-    }
-
-    return result;
-}
+constexpr auto py_file_name = "exec.py";
+constexpr auto py_method_name = "execute";
 
 int main(int argc, char* argv[])
 {
@@ -32,11 +19,12 @@ int main(int argc, char* argv[])
     // Clear the screen
     system("tput reset");
 
-    auto const result = exec(argv[1]);
+    std::stringstream ss_file_path;
+    ss_file_path << dirname(const_cast<char*>(std::string(__FILE__).c_str())) << '/' << py_file_name;
 
-    std::cout << "\033[1;31m" << "Execution result:" << "\033[0m" << std::endl;
-    std::cout << result << std::endl;
+    std::wcout
+        << py_call_method(ss_file_path.str(), py_method_name, std::string(argv[1]))
+        << std::endl;
 
     return 0;
 }
-
