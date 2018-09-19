@@ -5,8 +5,8 @@
 
 #include <boa/boa.h>
 
-constexpr auto py_file_name = "exec.py";
-constexpr auto py_method_name = "execute";
+constexpr auto py_file_name = "auxiliary.py";
+constexpr auto py_method_name = "execute_command";
 
 int main(int argc, char* argv[])
 {

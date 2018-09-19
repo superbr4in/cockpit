@@ -1,4 +1,4 @@
 import os
 
-def execute(command):
+def execute_command(command):
     return os.popen(command).read()
