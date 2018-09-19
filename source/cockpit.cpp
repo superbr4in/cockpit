@@ -5,8 +5,13 @@
 
 #include <boa/boa.h>
 
-constexpr auto py_file_name = "auxiliary.py";
-constexpr auto py_method_name = "execute_command";
+std::wstring execute_command(std::string const& command)
+{
+    std::stringstream ss_file_location;
+    ss_file_location << dirname(const_cast<char*>(std::string(__FILE__).c_str())) << "/auxiliary.py";
+
+    return boa::python_file(ss_file_location.str()).call_method<std::wstring>(__FUNCTION__, command);
+}
 
 int main(int argc, char* argv[])
 {
@@ -15,16 +20,13 @@ int main(int argc, char* argv[])
         // TODO: Print help
         return 0;
     }
+
+    std::string const command = argv[1];
     
     // Clear the screen
     system("tput reset");
-
-    std::stringstream ss_file_path;
-    ss_file_path << dirname(const_cast<char*>(std::string(__FILE__).c_str())) << '/' << py_file_name;
-
-    std::wcout
-        << py_call_method(ss_file_path.str(), py_method_name, std::string(argv[1]))
-        << std::endl;
+    
+    std::wcout << execute_command(command) << std::endl;
 
     return 0;
 }
