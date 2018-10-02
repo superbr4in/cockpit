@@ -1,17 +1,5 @@
-#include <iostream>
-#include <libgen.h>
-#include <sstream>
-#include <string>
-
-#include <boa/boa.h>
-
-std::wstring execute_command(std::string const& command)
-{
-    std::stringstream ss_file_location;
-    ss_file_location << dirname(const_cast<char*>(std::string(__FILE__).c_str())) << "/auxiliary.py";
-
-    return boa::python_file(ss_file_location.str()).call_method<std::wstring>(__FUNCTION__, command);
-}
+#include <cockpit/auxiliary.h>
+#include <cockpit/updater.h>
 
 int main(int argc, char* argv[])
 {
@@ -21,12 +9,8 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::string const command = argv[1];
-    
-    // Clear the screen
-    system("tput reset");
-    
-    std::wcout << execute_command(command) << std::endl;
+    initialize_auxiliary();
 
-    return 0;
+    updater const u(argv[1], 1000);
+    u.run();
 }
