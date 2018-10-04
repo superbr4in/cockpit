@@ -1,7 +1,7 @@
 #include <memory>
 
 #include <boa/boa.h>
-#include <cockpit/auxiliary.h>
+#include <cockpit_tool/auxiliary.h>
 
 std::unique_ptr<boa::python_file> python_file;
 

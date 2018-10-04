@@ -7,13 +7,19 @@ add_subdirectory (
 
 find_package ( Threads )
 
-add_executable ( cockpit
-    "source/auxiliary.cpp"
-    "source/cockpit.cpp"
-    "source/command_monitor.cpp" )
+add_library ( cockpit SHARED
+    "source/cockpit.cpp" )
 
-target_include_directories ( cockpit PRIVATE
-    "include/" )
-target_link_libraries ( cockpit
-    boa
+target_include_directories ( cockpit PUBLIC
+    "include/"
     ${CMAKE_THREAD_LIBS_INIT} )
+
+add_executable ( cockpit_tool
+    "source/auxiliary.cpp"
+    "source/cockpit_tool.cpp" )
+
+target_include_directories ( cockpit_tool PRIVATE
+    "include/" )
+target_link_libraries ( cockpit_tool
+    boa
+    cockpit )
