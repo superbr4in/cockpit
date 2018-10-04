@@ -21,8 +21,8 @@ void set_cursor_pos(int line, int column)
     std::cout << "\x1B[" << line << ";" << column << "H" << std::flush;
 }
 
-cockpit::cockpit(std::function<std::wstring()> update_function, int update_interval)
-    : update_function_(update_function), update_interval_(update_interval), update_status_(false) { }
+cockpit::cockpit(std::function<std::wstring()> update_function, int update_interval_ms)
+    : update_function_(update_function), update_interval_ms_(update_interval_ms), update_status_(false) { }
 
 void cockpit::start()
 {
@@ -39,9 +39,12 @@ void cockpit::start()
 
             while (update_status_)
             {
+                auto const start_time = std::chrono::steady_clock::now();
+
                 print(update_function_());
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(update_interval_));
+                auto const duration = std::chrono::steady_clock::now() - start_time;
+                std::this_thread::sleep_for(std::chrono::milliseconds(update_interval_ms_) - duration);
             }
         });
 }
