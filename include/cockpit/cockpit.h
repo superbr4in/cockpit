@@ -6,7 +6,9 @@
 
 class cockpit
 {
-    int update_interval_ms_;
+    int const ms_update_interval_;
+    int const n_ignored_lines_;
+
     std::function<std::wstring()> update_function_;
 
     std::future<void> update_future_;
@@ -15,7 +17,8 @@ class cockpit
 public:
 
     cockpit(
-        int update_interval_ms,
+        int ms_update_interval,
+        int n_ignored_lines,
         std::function<std::wstring()> const& update_function = []{ return std::wstring { }; });
 
     void set_update_function(std::function<std::wstring()> const& update_function);
@@ -25,5 +28,5 @@ public:
 
 private:
 
-    static void print(std::wstring const& text);
+    void update() const;
 };
