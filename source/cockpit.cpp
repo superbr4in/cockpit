@@ -21,16 +21,16 @@ void cockpit::start()
     if (update_status_)
         return;
 
+    // Start a new asynchronous update loop
     update_status_ = true;
-
-    // Start a new update loop
     update_future_ = std::async(std::launch::async,
         [this]()
         {
             // Set maximum cancellation delay to 50ms
             auto const sleep_duration_part = std::chrono::milliseconds(50);
 
-            while (update_status_)
+            // Update at least once
+            do
             {
                 auto const start_time = std::chrono::steady_clock::now();
 
@@ -45,13 +45,13 @@ void cockpit::start()
                 for (auto i = 0; i < sleep_duration / sleep_duration_part && update_status_; ++i)
                     std::this_thread::sleep_for(sleep_duration_part);
             }
+            while (update_status_);
         });
 }
 void cockpit::stop()
 {
     // Stop a running update loop
     update_status_ = false;
-
     update_future_.wait();
 }
 
