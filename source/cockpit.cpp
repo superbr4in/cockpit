@@ -15,11 +15,6 @@ cockpit::cockpit(
         update_function_(update_function),
         update_status_(false) { }
 
-void cockpit::set_update_function(std::function<std::wstring()> const& update_function)
-{
-    update_function_ = update_function;
-}
-
 void cockpit::start()
 {
     // Ignore multiple start attempts
@@ -32,12 +27,6 @@ void cockpit::start()
     update_future_ = std::async(std::launch::async,
         [this]()
         {
-            unsigned short n_lines, n_columns;
-            terminal_get_size(&n_lines, &n_columns);
-
-            // Create space not to overwrite existing output
-            std::cout << std::string(n_lines, '\n') << std::flush;
-
             while (update_status_)
             {
                 auto const start_time = std::chrono::steady_clock::now();

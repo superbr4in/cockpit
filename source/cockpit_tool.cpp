@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <cockpit/cockpit.h>
+#include <cockpit/terminal.h>
 #include <cockpit_tool/auxiliary.h>
 
 int main(int argc, char* argv[])
@@ -10,6 +11,12 @@ int main(int argc, char* argv[])
         // TODO: Print help
         return 0;
     }
+
+    unsigned short n_lines, n_columns;
+    terminal_get_size(&n_lines, &n_columns);
+
+    // Create space not to overwrite existing output
+    std::cout << std::string(n_lines, '\n') << std::flush;
 
     initialize_auxiliary();
 
