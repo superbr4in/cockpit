@@ -4,25 +4,24 @@
 #include <thread>
 
 #include <cockpit/cockpit.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#include <cockpit/terminal.h>
 
-void get_terminal_size(int& lines, int& columns)
-{
-    struct winsize size;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-
-    lines = size.ws_row;
-    columns = size.ws_col;
-}
-
-void set_cursor_pos(int line, int column)
+void set_cursor_position(int line, int column)
 {
     std::cout << "\x1B[" << line << ";" << column << "H" << std::flush;
 }
+void clear_line()
+{
+    std::cout << "\x1B[2K" << std::flush;
+}
 
-cockpit::cockpit(std::function<std::wstring()> update_function, int update_interval_ms)
-    : update_function_(update_function), update_interval_ms_(update_interval_ms), update_status_(false) { }
+cockpit::cockpit(int update_interval_ms, std::function<std::wstring()> const& update_function)
+    : update_interval_ms_(update_interval_ms), update_function_(update_function), update_status_(false) { }
+
+void cockpit::set_update_function(std::function<std::wstring()> const& update_function)
+{
+    update_function_ = update_function;
+}
 
 void cockpit::start()
 {
@@ -59,8 +58,8 @@ void cockpit::stop()
 void cockpit::print(std::wstring const& text)
 {
     // Get available space
-    int n_lines, n_columns;
-    get_terminal_size(n_lines, n_columns);
+    unsigned short n_lines, n_columns;
+    get_terminal_size(&n_lines, &n_columns);
 
     // Leave the bottom line untouched
     n_lines -= 1;
@@ -70,10 +69,10 @@ void cockpit::print(std::wstring const& text)
 
     for (auto line = 1; line <= n_lines; ++line)
     {
-        set_cursor_pos(line, 1);
+        set_cursor_position(line, 1);
 
         // Clear the current line
-        std::cout << std::string(n_columns, ' ') << '\r';
+        clear_line();
 
         // Print the current line of the command output (if there is one)
         std::wstring line_output_command;

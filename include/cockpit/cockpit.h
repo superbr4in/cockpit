@@ -6,15 +6,19 @@
 
 class cockpit
 {
-    std::function<std::wstring()> update_function_;
     int update_interval_ms_;
+    std::function<std::wstring()> update_function_;
 
     std::future<void> update_future_;
     bool update_status_;
 
 public:
 
-    cockpit(std::function<std::wstring()> update_function, int update_interval_ms);
+    cockpit(
+        int update_interval_ms,
+        std::function<std::wstring()> const& update_function = []{ return std::wstring { }; });
+
+    void set_update_function(std::function<std::wstring()> const& update_function);
 
     void start();
     void stop();

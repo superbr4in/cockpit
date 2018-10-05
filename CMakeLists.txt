@@ -8,7 +8,8 @@ add_subdirectory (
 find_package ( Threads )
 
 add_library ( cockpit SHARED
-    "source/cockpit.cpp" )
+    "source/cockpit.cpp"
+    "source/terminal.c" )
 
 target_include_directories ( cockpit PUBLIC
     "include/"

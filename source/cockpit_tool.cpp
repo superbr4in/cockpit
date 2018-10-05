@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
     initialize_auxiliary();
 
-    cockpit cockpit([argv]() { return execute_command(argv[1]); }, 1000);
+    cockpit cockpit(1000, [argv]() { return execute_command(argv[1]); });
     cockpit.start();
 
     std::cin.get();
