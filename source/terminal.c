@@ -1,7 +1,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-void get_terminal_size(unsigned short* n_lines, unsigned short* n_columns)
+void terminal_get_size(unsigned short* n_lines, unsigned short* n_columns)
 {
     struct winsize size;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);

@@ -6,15 +6,6 @@
 #include <cockpit/cockpit.h>
 #include <cockpit/terminal.h>
 
-void set_cursor_position(int line, int column)
-{
-    std::cout << "\x1B[" << line << ";" << column << "H" << std::flush;
-}
-void clear_line()
-{
-    std::cout << "\x1B[2K" << std::flush;
-}
-
 cockpit::cockpit(
     int ms_update_interval,
     int n_ignored_lines,
@@ -42,7 +33,7 @@ void cockpit::start()
         [this]()
         {
             unsigned short n_lines, n_columns;
-            get_terminal_size(&n_lines, &n_columns);
+            terminal_get_size(&n_lines, &n_columns);
 
             // Create space not to overwrite existing output
             std::cout << std::string(n_lines, '\n') << std::flush;
@@ -72,7 +63,7 @@ void cockpit::stop()
 void cockpit::update() const
 {
     unsigned short n_lines, n_columns;
-    get_terminal_size(&n_lines, &n_columns);
+    terminal_get_size(&n_lines, &n_columns);
 
     // Leave the specified number of bottom lines untouched
     n_lines -= n_ignored_lines_;
@@ -80,12 +71,12 @@ void cockpit::update() const
     // Inquire the function output
     std::wstringstream wss_output(update_function_());
 
-    for (auto line = 1; line <= n_lines; ++line)
+    for (unsigned short line = 1; line <= n_lines; ++line)
     {
-        set_cursor_position(line, 1);
+        terminal_set_cursor_position(line, 1);
 
         // Clear the current line
-        clear_line();
+        terminal_clear_line();
 
         // Print the current line of the function output (if there is another)
         std::wstring output_line;
