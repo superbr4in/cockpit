@@ -1,13 +1,14 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <future>
 #include <string>
 
 class cockpit
 {
-    int const ms_update_interval_;
-    int const n_ignored_lines_;
+    std::chrono::milliseconds const update_interval_;
+    unsigned short const n_ignored_lines_;
 
     std::function<std::wstring()> const update_function_;
 
@@ -17,8 +18,8 @@ class cockpit
 public:
 
     cockpit(
-        int ms_update_interval,
-        int n_ignored_lines,
+        std::chrono::milliseconds::rep ms_update_interval,
+        unsigned short n_ignored_lines,
         std::function<std::wstring()> const& update_function);
 
     void start();

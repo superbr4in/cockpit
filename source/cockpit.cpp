@@ -7,10 +7,10 @@
 #include <cockpit/terminal.h>
 
 cockpit::cockpit(
-    int ms_update_interval,
-    int n_ignored_lines,
+    std::chrono::milliseconds::rep ms_update_interval,
+    unsigned short n_ignored_lines,
     std::function<std::wstring()> const& update_function) :
-        ms_update_interval_(ms_update_interval),
+        update_interval_(std::chrono::milliseconds(ms_update_interval)),
         n_ignored_lines_(n_ignored_lines),
         update_function_(update_function),
         update_status_(false) { }
@@ -27,6 +27,9 @@ void cockpit::start()
     update_future_ = std::async(std::launch::async,
         [this]()
         {
+            // Set maximum cancellation delay to 50ms
+            auto const sleep_duration_part = std::chrono::milliseconds(50);
+
             while (update_status_)
             {
                 auto const start_time = std::chrono::steady_clock::now();
@@ -35,9 +38,12 @@ void cockpit::start()
 
                 // Calculate the additional sleep duration
                 auto const update_duration = std::chrono::steady_clock::now() - start_time;
-                auto const sleep_duration = std::chrono::milliseconds(ms_update_interval_) - update_duration;
+                auto const sleep_duration = update_interval_ - update_duration;
 
-                std::this_thread::sleep_for(sleep_duration);
+                // Sleep with the option for cancellation
+                std::this_thread::sleep_for(sleep_duration % sleep_duration_part);
+                for (auto i = 0; i < sleep_duration / sleep_duration_part && update_status_; ++i)
+                    std::this_thread::sleep_for(sleep_duration_part);
             }
         });
 }
@@ -54,8 +60,10 @@ void cockpit::update() const
     unsigned short n_lines, n_columns;
     terminal_get_size(&n_lines, &n_columns);
 
-    // Leave the specified number of bottom lines untouched
-    n_lines -= n_ignored_lines_;
+    // Leave the specified number of lines untouched
+    if (n_ignored_lines_ < n_lines)
+        n_lines -= n_ignored_lines_;
+    else n_lines = 0;
 
     // Inquire the function output
     std::wstringstream wss_output(update_function_());
@@ -75,5 +83,6 @@ void cockpit::update() const
         std::cout << std::flush;
     }
 
+    // Reset cursor
     terminal_set_cursor_position(1, 1);
 }
