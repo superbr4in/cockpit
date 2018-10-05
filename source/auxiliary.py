@@ -1,4 +1,4 @@
-import os, sys, termios, tty
+import os
 
-def execute_command(command):
+def pipe_command(command):
     return os.popen(command).read()

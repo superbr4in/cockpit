@@ -7,8 +7,8 @@
 #include <cockpit/terminal.h>
 
 cockpit::cockpit(
-    std::chrono::milliseconds::rep ms_update_interval,
-    unsigned short n_ignored_lines,
+    std::chrono::milliseconds::rep const ms_update_interval,
+    unsigned short const n_ignored_lines,
     std::function<std::wstring()> const& update_function) :
         update_interval_(std::chrono::milliseconds(ms_update_interval)),
         n_ignored_lines_(n_ignored_lines),

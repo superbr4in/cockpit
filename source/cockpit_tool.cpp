@@ -23,12 +23,13 @@ int main(int argc, char* argv[])
 
     initialize_python();
 
-    cockpit cockpit(1000, 2, [argv] { return py_execute_command(argv[1]); });
+    cockpit cockpit(1000, 2, [argv] { return py_pipe_command(argv[1]); });
     cockpit.start();
 
     std::cin.get();
 
     cockpit.stop();
 
+    // Set cursor to bottom
     terminal_set_cursor_position(n_lines, 1);
 }

@@ -14,7 +14,7 @@ void initialize_python()
     python_file = std::make_unique<boa::python_file>(file_path_py.c_str());
 }
 
-std::wstring py_execute_command(std::string const& command)
+std::wstring py_pipe_command(std::string const& command)
 {
-    return python_file->call_function<std::wstring, char const*>("execute_command", command.c_str());
+    return python_file->call_function<std::wstring, char const*>("pipe_command", command.c_str());
 }
