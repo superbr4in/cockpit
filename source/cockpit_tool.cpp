@@ -18,12 +18,17 @@ int main(int argc, char* argv[])
     // Create space not to overwrite existing output
     std::cout << std::string(n_lines, '\n') << std::flush;
 
-    initialize_auxiliary();
+    terminal_set_cursor_position(n_lines - 1, 1);
+    std::cout << "Press ENTER to exit...";
 
-    cockpit cockpit(1000, 1, [argv] { return execute_command(argv[1]); });
+    initialize_python();
+
+    cockpit cockpit(1000, 2, [argv] { return py_execute_command(argv[1]); });
     cockpit.start();
 
     std::cin.get();
 
     cockpit.stop();
+
+    terminal_set_cursor_position(n_lines, 1);
 }

@@ -74,4 +74,6 @@ void cockpit::update() const
 
         std::cout << std::flush;
     }
+
+    terminal_set_cursor_position(1, 1);
 }

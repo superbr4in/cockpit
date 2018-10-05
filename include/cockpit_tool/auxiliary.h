@@ -2,7 +2,6 @@
 
 #include <string>
 
-void initialize_auxiliary();
+void initialize_python();
 
-std::wstring execute_command(std::string const& command);
-std::wstring read_character();
+std::wstring py_execute_command(std::string const& command);
