@@ -43,4 +43,6 @@ int main(int argc, char* argv[])
     // Clear exit text
     terminal_set_cursor_position(n_lines, 1);
     terminal_clear_line();
+
+    std::cout << std::flush;
 }

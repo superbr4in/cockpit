@@ -79,10 +79,10 @@ void cockpit::update() const
         std::wstring output_line;
         if (std::getline(wss_output, output_line, L'\n'))
             std::wcout << output_line;
-
-        std::cout << std::flush;
     }
 
     // Reset cursor
     terminal_set_cursor_position(1, 1);
+
+    std::cout << std::flush;
 }
