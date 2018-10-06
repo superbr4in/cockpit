@@ -4,7 +4,7 @@ set ( CMAKE_CXX_STANDARD 17 )
 
 add_subdirectory ( "submodules/boa/" )
 
-find_package ( Threads )
+find_package ( Threads REQUIRED )
 
 add_library ( cockpit SHARED
     "source/cockpit.cpp"
@@ -12,7 +12,8 @@ add_library ( cockpit SHARED
     "source/terminal.cpp" )
 
 target_include_directories ( cockpit PUBLIC
-    "include/"
+    "include/" )
+target_link_libraries ( cockpit
     ${CMAKE_THREAD_LIBS_INIT} )
 
 add_executable ( cockpit_tool
