@@ -9,7 +9,7 @@
 cockpit::cockpit(
     std::chrono::milliseconds::rep const ms_update_interval,
     unsigned short const n_ignored_lines,
-    std::function<std::wstring()> const& update_function) :
+    std::function<std::string()> const& update_function) :
         update_interval_(std::chrono::milliseconds(ms_update_interval)),
         n_ignored_lines_(n_ignored_lines),
         update_function_(update_function),
@@ -66,7 +66,7 @@ void cockpit::update() const
     else n_lines = 0;
 
     // Inquire the function output
-    std::wstringstream wss_output(update_function_());
+    std::stringstream ss_output(update_function_());
 
     for (unsigned short line = 1; line <= n_lines; ++line)
     {
@@ -76,9 +76,9 @@ void cockpit::update() const
         terminal_clear_line();
 
         // Print the current line of the function output (if there is another)
-        std::wstring output_line;
-        if (std::getline(wss_output, output_line, L'\n'))
-            std::wcout << output_line;
+        std::string output_line;
+        if (std::getline(ss_output, output_line, '\n'))
+            std::cout << output_line;
     }
 
     // Reset cursor

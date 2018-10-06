@@ -3,12 +3,13 @@
 #include <cockpit/cockpit.h>
 #include <cockpit/terminal.h>
 #include <cockpit_tool/auxiliary.h>
+#include <cockpit_tool/terminal.h>
 
 int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
-        // TODO: Print help
+        std::cout << "Usage: " << argv[0] << " <command>" << std::endl;
         return 0;
     }
 
@@ -30,13 +31,13 @@ int main(int argc, char* argv[])
             // Print exit text
             terminal_set_cursor_position(n_lines, 1);
             terminal_clear_line();
-            std::cout << std::string("Press ENTER to exit...").substr(0, n_columns);
+            std::cout << std::string("Press any key to exit...").substr(0, n_columns);
 
-            return py_pipe_command(command);
+            return pipe_command_output(command);
         });
     cockpit.start();
 
-    std::cin.get();
+    py_read_character();
 
     cockpit.stop();
 
