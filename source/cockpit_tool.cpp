@@ -5,6 +5,14 @@
 #include <cockpit/cockpit.h>
 #include <cockpit/terminal.h>
 
+auto constexpr KEY_ARROW_UP    = 0x1B5B41;
+auto constexpr KEY_ARROW_DOWN  = 0x1B5B42;
+auto constexpr KEY_ARROW_RIGHT = 0x1B5B43;
+auto constexpr KEY_ARROW_LEFT  = 0x1B5B44;
+
+auto constexpr KEY_PAGE_UP   = 0x1B5B357E;
+auto constexpr KEY_PAGE_DOWN = 0x1B5B367E;
+
 std::string pipe_command_output(std::string command)
 {
     std::array<char, 128> buffer;
@@ -48,13 +56,35 @@ int main(int argc, char* argv[])
             // Print exit text
             terminal_set_cursor_position(n_lines, 1);
             terminal_clear_line();
-            std::cout << std::string("Press any key to exit...").substr(0, n_columns);
+            std::cout << std::string(":").substr(0, n_columns);
 
             return pipe_command_output(command);
         });
     cockpit.start();
-    
-    py_aux.call_function<std::string>("read_character");
+
+    uint32_t key;
+    do
+    {
+        key = py_aux.call_function<uint32_t>("read_key");
+
+        switch (key)
+        {
+            case KEY_ARROW_UP:
+                break;
+            case KEY_ARROW_DOWN:
+                break;
+            case KEY_ARROW_RIGHT:
+                break;
+            case KEY_ARROW_LEFT:
+                break;
+            case KEY_PAGE_UP:
+                break;
+            case KEY_PAGE_DOWN:
+                break;
+            default:;
+        }
+    }
+    while (key != 'q');
 
     cockpit.stop();
 
