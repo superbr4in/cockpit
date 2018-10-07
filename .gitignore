@@ -1,4 +1,10 @@
-build/
+CMakeFiles/
 __pycache__/
+bin/
 
 *.swp
+
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+compile_commands.json
