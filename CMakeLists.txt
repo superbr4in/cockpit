@@ -20,7 +20,6 @@ target_link_libraries ( cockpit
     ${CMAKE_THREAD_LIBS_INIT} )
 
 add_executable ( cockpit_tool
-    "source/auxiliary.cpp"
     "source/cockpit_tool.cpp" )
 
 target_include_directories ( cockpit_tool PRIVATE
@@ -28,3 +27,5 @@ target_include_directories ( cockpit_tool PRIVATE
 target_link_libraries ( cockpit_tool
     boa
     cockpit )
+
+configure_file ( "source/cockpit_tool_aux.py" "bin/cockpit_tool_aux.py" COPYONLY )
