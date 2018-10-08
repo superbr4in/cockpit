@@ -9,5 +9,5 @@ def read_key():
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, prev_settings)
     key = 0
     for i in range(len(code)):
-        key += code[i] << (len(code) - i - 1) * 8
+        key += code[i] << i * 8
     return key
