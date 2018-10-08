@@ -4,7 +4,7 @@
 #include <thread>
 
 #include <cockpit/cockpit.h>
-#include <cockpit/terminal.h>
+#include <simple-terminal/terminal.h>
 
 cockpit::cockpit(
     std::chrono::milliseconds::rep const ms_update_interval,
@@ -57,8 +57,7 @@ void cockpit::stop()
 
 void cockpit::update() const
 {
-    unsigned short n_lines, n_columns;
-    terminal_get_size(&n_lines, &n_columns);
+    auto n_lines = term::get_size().first;
 
     // Leave the specified number of lines untouched
     if (n_ignored_lines_ < n_lines)
@@ -70,10 +69,10 @@ void cockpit::update() const
 
     for (unsigned short line = 1; line <= n_lines; ++line)
     {
-        terminal_set_cursor_position(line, 1);
+        term::set_cursor(line, 1);
 
         // Clear the current line
-        terminal_clear_line();
+        term::clear_line();
 
         // Print the current line of the function output (if there is another)
         std::string output_line;
@@ -82,7 +81,7 @@ void cockpit::update() const
     }
 
     // Reset cursor
-    terminal_set_cursor_position(1, 1);
+    term::set_cursor(1, 1);
 
     std::cout << std::flush;
 }
