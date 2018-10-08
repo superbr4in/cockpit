@@ -1,3 +1,6 @@
 [submodule "submodules/boa"]
 	path = submodules/boa
 	url = https://github.com/superbr4in/boa
+[submodule "submodules/simple-terminal"]
+	path = submodules/simple-terminal
+	url = https://github.com/superbr4in/simple-terminal.git
