@@ -4,3 +4,6 @@
 [submodule "submodules/simple-terminal"]
 	path = submodules/simple-terminal
 	url = https://github.com/superbr4in/simple-terminal.git
+[submodule "submodules/dispute"]
+	path = submodules/dispute
+	url = https://github.com/superbr4in/dispute.git

@@ -6,6 +6,7 @@ set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin/" )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/" )
 
 add_subdirectory ( "submodules/boa/" )
+add_subdirectory ( "submodules/dispute/" )
 
 find_package ( Threads REQUIRED )
 
@@ -26,6 +27,7 @@ target_include_directories ( cockpit_tool PRIVATE
     "submodules/simple-terminal/include/" )
 target_link_libraries ( cockpit_tool
     boa
+    dispute
     cockpit )
 
 configure_file ( "source/cockpit_tool_aux.py" "bin/cockpit_tool_aux.py" COPYONLY )
