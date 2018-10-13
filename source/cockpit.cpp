@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <future>
 #include <iostream>
 #include <sstream>
@@ -9,7 +10,7 @@
 cockpit::cockpit(
     std::chrono::milliseconds::rep const ms_update_interval,
     unsigned short const n_ignored_lines,
-    std::function<std::string()> const& update_function) :
+    std::function<std::pair<std::string, int*>()> const& update_function) :
         update_interval_(std::chrono::milliseconds(ms_update_interval)),
         n_ignored_lines_(n_ignored_lines),
         update_function_(update_function),
@@ -65,19 +66,31 @@ void cockpit::update() const
     else n_lines = 0;
 
     // Inquire the function output
-    std::stringstream ss_output(update_function_());
+    auto const [output, scroll] = update_function_();
 
-    for (unsigned short line = 1; line <= n_lines; ++line)
+    std::vector<std::string> output_lines;
+
+    std::stringstream ss_output(output);
+    std::string output_line;
+    while (std::getline(ss_output, output_line))
+        output_lines.push_back(output_line);
+
+    if (output_lines.empty())
+        output_lines.push_back({ });
+
+    *scroll = std::clamp(*scroll, 0, static_cast<int>(output_lines.size() - 1));
+
+    for (unsigned short line = 0; line < n_lines; ++line)
     {
-        term::set_cursor(line, 1);
+        term::set_cursor(line + 1, 1);
 
         // Clear the current line
         term::clear_line();
 
-        // Print the current line of the function output (if there is another)
-        std::string output_line;
-        if (std::getline(ss_output, output_line, '\n'))
-            std::cout << output_line;
+        // Print the current line (if there is another)
+        auto scroll_line = line + *scroll;
+        if (scroll_line < output_lines.size())
+            std::cout << output_lines.at(scroll_line);
     }
 
     // Reset cursor
