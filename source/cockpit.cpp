@@ -14,25 +14,29 @@ cockpit::cockpit(
         update_interval_(std::chrono::milliseconds(ms_update_interval)),
         n_ignored_lines_(n_ignored_lines),
         update_function_(update_function),
-        update_status_(false) { }
+        update_(false),
+        fire_(false) { }
 
 void cockpit::start()
 {
     // Ignore multiple start attempts
-    if (update_status_)
+    if (update_)
         return;
 
     // Start a new asynchronous update loop
-    update_status_ = true;
+    update_ = true;
     update_future_ = std::async(std::launch::async,
         [this]()
         {
-            // Set maximum cancellation delay to 50ms
+            // Set maximum interrupt delay to 50ms
             auto const sleep_duration_part = std::chrono::milliseconds(50);
 
-            // Update at least once
+            // Loop updates (at least once)
             do
             {
+                // Reset an instant update request
+                fire_ = false;
+
                 auto const start_time = std::chrono::steady_clock::now();
 
                 update();
@@ -41,19 +45,25 @@ void cockpit::start()
                 auto const update_duration = std::chrono::steady_clock::now() - start_time;
                 auto const sleep_duration = update_interval_ - update_duration;
 
-                // Sleep with the option for cancellation
+                // Sleep with the ability to be interrupted
                 std::this_thread::sleep_for(sleep_duration % sleep_duration_part);
-                for (auto i = 0; i < sleep_duration / sleep_duration_part && update_status_; ++i)
+                for (auto i = 0; i < sleep_duration / sleep_duration_part && update_ && !fire_; ++i)
                     std::this_thread::sleep_for(sleep_duration_part);
             }
-            while (update_status_);
+            while (update_);
         });
 }
 void cockpit::stop()
 {
     // Stop a running update loop
-    update_status_ = false;
+    update_ = false;
     update_future_.wait();
+}
+
+void cockpit::fire()
+{
+    // Request an instant update
+    fire_ = true;
 }
 
 void cockpit::update() const

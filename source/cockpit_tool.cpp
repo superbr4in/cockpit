@@ -73,6 +73,7 @@ int main(int argc, char* argv[])
         n_lines = term::get_size().first; 
 
         // Handle scrolling
+        auto has_scrolled = true;
         switch (key)
         {
         case KEY_ARROW_UP:
@@ -87,7 +88,14 @@ int main(int argc, char* argv[])
         case KEY_PAGE_DOWN:
             scroll += n_lines;
             break;
+        default:
+            has_scrolled = false;
+            break;
         }
+
+        // Update once instantly if scrolled
+        if (has_scrolled)
+            cockpit.fire();
     }
     // Exit if ESC is pressed
     while (key != KEY_ESCAPE);
