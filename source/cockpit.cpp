@@ -5,7 +5,7 @@
 #include <thread>
 
 #include <cockpit/cockpit.h>
-#include <simple-terminal/terminal.h>
+#include <termaux/termaux.h>
 
 cockpit::cockpit(
     std::chrono::milliseconds::rep const ms_update_interval,
@@ -68,7 +68,7 @@ void cockpit::fire()
 
 void cockpit::update() const
 {
-    auto n_lines = term::get_size().first;
+    auto n_lines = tmx::get_lines();
 
     // Leave the specified number of lines untouched
     if (n_ignored_lines_ < n_lines)
@@ -92,10 +92,10 @@ void cockpit::update() const
 
     for (unsigned short line = 0; line < n_lines; ++line)
     {
-        term::set_cursor(line + 1, 1);
+        tmx::set_cursor(line + 1);
 
         // Clear the current line
-        term::clear_line();
+        tmx::clear_line();
 
         // Print the current line (if there is another)
         auto scroll_line = line + *scroll;
@@ -104,7 +104,7 @@ void cockpit::update() const
     }
 
     // Reset cursor
-    term::set_cursor(1, 1);
+    tmx::set_cursor(1);
 
     std::cout << std::flush;
 }

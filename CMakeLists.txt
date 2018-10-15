@@ -14,17 +14,16 @@ add_library ( cockpit SHARED
     "source/cockpit.cpp" )
 
 target_include_directories ( cockpit PUBLIC
-    "include/"
-    "submodules/simple-terminal/include/" )
+    "include/" )
 target_link_libraries ( cockpit
+    termaux
     ${CMAKE_THREAD_LIBS_INIT} )
 
 add_executable ( cockpit_tool
     "source/cockpit_tool.cpp" )
 
 target_include_directories ( cockpit_tool PRIVATE
-    "include/"
-    "submodules/simple-terminal/include/" )
+    "include/" )
 target_link_libraries ( cockpit_tool
     cockpit
     dispute

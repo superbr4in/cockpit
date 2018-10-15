@@ -5,7 +5,6 @@
 #include <vector>
 
 #include <cockpit/cockpit.h>
-#include <simple-terminal/terminal.h>
 #include <termaux/termaux.h>
 
 std::string pipe_command_output(std::string command)
@@ -35,7 +34,7 @@ int main(int argc, char* argv[])
     std::string const command(argv[1]);
 
     // Get current terminal size
-    auto n_lines = term::get_size().first;
+    auto n_lines = tmx::get_lines();
 
     // Create space not to overwrite existing output
     std::cout << std::string(n_lines, '\n') << std::flush;
@@ -57,10 +56,10 @@ int main(int argc, char* argv[])
     do
     {
         // Wait for a pressed key
-        key = tmx::getch4();
+        key = tmx::read_key();
 
         // Get current terminal size
-        n_lines = term::get_size().first; 
+        n_lines = tmx::get_lines();
 
         // Handle scrolling
         auto has_scrolled = true;
@@ -94,7 +93,7 @@ int main(int argc, char* argv[])
     cockpit.stop();
 
     // Move cursor to the bottom line
-    term::set_cursor(n_lines, 1);
+    tmx::set_cursor(n_lines);
 
     return 0;
 }
