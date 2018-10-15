@@ -4,16 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <boa/boa.h>
 #include <cockpit/cockpit.h>
 #include <simple-terminal/terminal.h>
-
-auto constexpr KEY_ESCAPE = 0x1B;
-
-auto constexpr KEY_ARROW_UP   = 0x415B1B;
-auto constexpr KEY_ARROW_DOWN = 0x425B1B;
-auto constexpr KEY_PAGE_UP    = 0x7E355B1B;
-auto constexpr KEY_PAGE_DOWN  = 0x7E365B1B;
+#include <termaux/termaux.h>
 
 std::string pipe_command_output(std::string command)
 {
@@ -41,9 +34,6 @@ int main(int argc, char* argv[])
 
     std::string const command(argv[1]);
 
-    // Get auxiliary python file from binary directory
-    boa::python_file const py_aux(std::string(argv[0]) + "_aux.py");
-
     // Get current terminal size
     auto n_lines = term::get_size().first;
 
@@ -67,7 +57,7 @@ int main(int argc, char* argv[])
     do
     {
         // Wait for a pressed key
-        key = py_aux.call_function<uint32_t>("read_key");
+        key = tmx::getch4();
 
         // Get current terminal size
         n_lines = term::get_size().first; 
@@ -76,16 +66,16 @@ int main(int argc, char* argv[])
         auto has_scrolled = true;
         switch (key)
         {
-        case KEY_ARROW_UP:
+        case tmx::KEY_ARROW_UP:
             --scroll;
             break;
-        case KEY_ARROW_DOWN:
+        case tmx::KEY_ARROW_DOWN:
             ++scroll;
             break;
-        case KEY_PAGE_UP:
+        case tmx::KEY_PAGE_UP:
             scroll -= n_lines;
             break;
-        case KEY_PAGE_DOWN:
+        case tmx::KEY_PAGE_DOWN:
             scroll += n_lines;
             break;
         default:
@@ -98,7 +88,7 @@ int main(int argc, char* argv[])
             cockpit.fire();
     }
     // Exit if ESC is pressed
-    while (key != KEY_ESCAPE);
+    while (key != tmx::KEY_ESCAPE);
 
     // Stop running cockpit instance
     cockpit.stop();

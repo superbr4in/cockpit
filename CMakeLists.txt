@@ -5,8 +5,8 @@ set ( CMAKE_CXX_STANDARD 17 )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin/" )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/" )
 
-add_subdirectory ( "submodules/boa/" )
 add_subdirectory ( "submodules/dispute/" )
+add_subdirectory ( "submodules/termaux/" )
 
 find_package ( Threads REQUIRED )
 
@@ -26,8 +26,6 @@ target_include_directories ( cockpit_tool PRIVATE
     "include/"
     "submodules/simple-terminal/include/" )
 target_link_libraries ( cockpit_tool
-    boa
+    cockpit
     dispute
-    cockpit )
-
-configure_file ( "source/cockpit_tool_aux.py" "bin/cockpit_tool_aux.py" COPYONLY )
+    termaux )

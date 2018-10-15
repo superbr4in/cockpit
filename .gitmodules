@@ -1,9 +1,9 @@
-[submodule "submodules/boa"]
-	path = submodules/boa
-	url = https://github.com/superbr4in/boa
 [submodule "submodules/simple-terminal"]
 	path = submodules/simple-terminal
 	url = https://github.com/superbr4in/simple-terminal.git
 [submodule "submodules/dispute"]
 	path = submodules/dispute
 	url = https://github.com/superbr4in/dispute.git
+[submodule "submodules/termaux"]
+	path = submodules/termaux
+	url = https://github.com/superbr4in/termaux.git
