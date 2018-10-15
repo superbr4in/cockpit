@@ -9,7 +9,7 @@
 
 std::string pipe_command_output(std::string command)
 {
-    std::array<char, 128> buffer;
+    std::array<char, 0x80> buffer;
 
     std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
 
@@ -23,7 +23,7 @@ std::string pipe_command_output(std::string command)
     return output;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char const* argv[])
 {
     if (argc != 2)
     {
