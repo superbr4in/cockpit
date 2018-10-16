@@ -57,7 +57,8 @@ void cockpit::stop()
 {
     // Stop a running update loop
     update_ = false;
-    update_future_.wait();
+    if (update_future_.valid())
+        update_future_.wait();
 }
 
 void cockpit::fire()
