@@ -1,1 +1,3 @@
-# cockpit
+# Cockpit
+
+Universal command monitoring device
