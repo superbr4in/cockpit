@@ -23,6 +23,47 @@ std::string pipe_command_output(std::string command)
     return output;
 }
 
+void handle_keys(cockpit* cockpit, unsigned short* n_lines, int* scroll)
+{
+    // Loop through user input characters
+    uint32_t key = 0;
+    do
+    {
+        // Wait for a pressed key
+        key = tmx::read_key();
+
+        // Get current terminal size
+        *n_lines = tmx::get_lines();
+
+        // Handle scrolling
+        auto has_scrolled = true;
+        switch (key)
+        {
+        case tmx::KEY_ARROW_UP:
+            --(*scroll);
+            break;
+        case tmx::KEY_ARROW_DOWN:
+            ++(*scroll);
+            break;
+        case tmx::KEY_PAGE_UP:
+            *scroll -= *n_lines;
+            break;
+        case tmx::KEY_PAGE_DOWN:
+            *scroll += *n_lines;
+            break;
+        default:
+            has_scrolled = false;
+            break;
+        }
+
+        // Update once instantly if scrolled
+        if (has_scrolled)
+            cockpit->fire();
+    }
+    // Exit if ESC is pressed
+    while (key != tmx::KEY_ESCAPE);
+}
+
 int main(int argc, char const* argv[])
 {
     if (argc != 2)
@@ -51,49 +92,29 @@ int main(int argc, char const* argv[])
         });
     cockpit.start();
 
-    // Loop through user input characters
-    uint32_t key = 0;
-    do
+    while (true)
     {
-        // Wait for a pressed key
-        key = tmx::read_key();
+        cockpit.wake();
 
-        // Get current terminal size
-        n_lines = tmx::get_lines();
+        handle_keys(&cockpit, &n_lines, &scroll);
 
-        // Handle scrolling
-        auto has_scrolled = true;
-        switch (key)
-        {
-        case tmx::KEY_ARROW_UP:
-            --scroll;
-            break;
-        case tmx::KEY_ARROW_DOWN:
-            ++scroll;
-            break;
-        case tmx::KEY_PAGE_UP:
-            scroll -= n_lines;
-            break;
-        case tmx::KEY_PAGE_DOWN:
-            scroll += n_lines;
-            break;
-        default:
-            has_scrolled = false;
-            break;
-        }
+        cockpit.suspend();
 
-        // Update once instantly if scrolled
-        if (has_scrolled)
-            cockpit.fire();
+        tmx::set_cursor(n_lines);
+
+        std::cout << "$ " << std::flush;
+
+        std::string input;
+        std::getline(std::cin, input);
+
+        if (input == "exit")
+            break;
+
+        pipe_command_output(input);
     }
-    // Exit if ESC is pressed
-    while (key != tmx::KEY_ESCAPE);
 
     // Stop running cockpit instance
     cockpit.stop();
-
-    // Move cursor to the bottom line
-    tmx::set_cursor(n_lines);
-
+    
     return 0;
 }

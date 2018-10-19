@@ -15,6 +15,7 @@ cockpit::cockpit(
         n_ignored_lines_(n_ignored_lines),
         update_function_(update_function),
         update_(false),
+        suspend_(false),
         fire_(false) { }
 
 void cockpit::start()
@@ -39,7 +40,8 @@ void cockpit::start()
 
                 auto const start_time = std::chrono::steady_clock::now();
 
-                update();
+                if (!suspend_)
+                    update();
 
                 // Calculate the additional sleep duration
                 auto const update_duration = std::chrono::steady_clock::now() - start_time;
@@ -59,6 +61,15 @@ void cockpit::stop()
     update_ = false;
     if (update_future_.valid())
         update_future_.wait();
+}
+
+void cockpit::wake()
+{
+    suspend_ = false;
+}
+void cockpit::suspend()
+{
+    suspend_ = true;
 }
 
 void cockpit::fire()

@@ -13,7 +13,7 @@ class cockpit
     std::function<std::pair<std::string, int*>()> const update_function_;
 
     std::future<void> update_future_;
-    bool update_, fire_;
+    bool update_, suspend_, fire_;
 
 public:
 
@@ -24,6 +24,9 @@ public:
 
     void start();
     void stop();
+
+    void wake();
+    void suspend();
 
     void fire();
 
