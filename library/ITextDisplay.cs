@@ -15,9 +15,9 @@ namespace Cockpit
         int Column { get; set; }
 
         /*!
-         *  Gets or sets the text to be displayed.
+         *  Gets or sets the lines of text to be displayed.
          */
-        string Content { get; set; }
+        string[] Content { get; set; }
 
         /*!
          *  Gets or sets a brief text containing additional information.

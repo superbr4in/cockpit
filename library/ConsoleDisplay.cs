@@ -29,8 +29,7 @@ namespace Cockpit
 
         private int _line, _column;
 
-        private string _content;
-        private string[] _contentLines;
+        private string[] _content;
         private int _contentWidth;
 
         private string _status;
@@ -43,7 +42,6 @@ namespace Cockpit
             _column = 0;
 
             _content = null;
-            _contentLines = null;
             _contentWidth = 0;
 
             _status = null;
@@ -66,25 +64,23 @@ namespace Cockpit
 
         /*! @copydoc ITextDisplay#Content
          */
-        public string Content
+        public string[] Content
         {
-            get { return _content; }
+            get { return (string[])_content.Clone(); }
             set
             {
                 _line = 0;
                 _column = 0;
 
-                if (string.IsNullOrEmpty(value))
+                if (value == null || value.Length == 0)
                 {
                     _content = null;
-                    _contentLines = null;
                     _contentWidth = 0;
                 }
                 else
                 {
-                    _content = value;
-                    _contentLines = _content.Split('\n');
-                    _contentWidth = _contentLines.Max(s => s.Length);
+                    _content = (string[])value.Clone();
+                    _contentWidth = _content.Max(s => s.Length);
                 }
 
                 if (!_visible)
@@ -122,7 +118,7 @@ namespace Cockpit
          */
         public void SetPosition(int line, int column)
         {
-            _line = ClampCoordinateValue(line, _contentLines.Length - StatusConsoleLine);
+            _line = ClampCoordinateValue(line, _content.Length - StatusConsoleLine);
             _column = ClampCoordinateValue(column, _contentWidth - Console.WindowWidth);
 
             if (!_visible)
@@ -162,10 +158,10 @@ namespace Cockpit
 
                 var contentLine = _line + consoleLine;
 
-                if (_contentLines == null || contentLine >= _contentLines.Length)
+                if (_content == null || contentLine >= _content.Length)
                     continue;
 
-                var text = _contentLines[contentLine];
+                var text = _content[contentLine];
 
                 if (text.Length <= _column)
                     continue;
