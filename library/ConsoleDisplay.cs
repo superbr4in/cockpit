@@ -132,8 +132,6 @@ namespace Cockpit
          */
         public void Show()
         {
-            Console.CursorVisible = false;
-
             _visible = true;
 
             DrawContent();
@@ -145,8 +143,6 @@ namespace Cockpit
         {
             Console.SetCursorPosition(0, Console.WindowHeight - 1);
             ClearLine();
-
-            Console.CursorVisible = true;
         }
 
         private void DrawContent()
